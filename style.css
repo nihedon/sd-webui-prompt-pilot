@@ -1,0 +1,185 @@
+#suggestion-box {
+    font-family: var(--font);
+    font-weight: var(--body-text-weight);
+    font-size: var(--body-text-size);
+    color: var(--body-text-color);
+    position: absolute;
+    z-index: 1000;
+    transition: transform 0.08s ease-out;
+    user-select: none;
+}
+#suggestion-box > .tab-container {
+    display: flex;
+    padding: 3px 3px 0px;
+    background-color: var(--border-color-primary);
+    border-bottom-width: 0;
+    border-radius: 4px 4px 0 0;
+    align-items: flex-end;
+}
+#suggestion-box > .tab-container.no-tab {
+    display: none;
+}
+#suggestion-box > .tab-container > .tab {
+    height: 20px;
+    width: 50px;
+    text-align: center;
+}
+#suggestion-box > .tab-container > .tab:hover {
+    cursor: pointer;
+}
+#suggestion-box > .tab-container > .tab.selected {
+    font-weight: bold;
+    background-color: var(--background-fill-primary);
+    border: var(--input-border-width) solid var(--input-border-color);
+    border-bottom-width: 0;
+    border-radius: 4px 4px 0 0;
+}
+#suggestion-box > .preview {
+    position: absolute;
+    top: 0;
+    right: calc(-12rem - 4px);
+    width: 12rem;
+    height: 18rem;
+    overflow: hidden;
+    border-radius: 4px;
+}
+#suggestion-box > .preview > img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+}
+#suggestion-box > ul {
+    margin: 0;
+    padding: 0;
+    background-color: var(--table-even-background-fill);
+    border: var(--input-border-width) solid var(--input-border-color);
+    max-height: 260px;
+    overflow-y: auto;
+    border-radius: 4px;
+    max-width: 420px;
+}
+#suggestion-box:not(:has(.tab-container.no-tab)) > ul {
+    border-radius: 0 0 4px 4px;
+    border-top-width: 0px;
+}
+#suggestion-box > ul > li:nth-child(odd) {
+    background-color: var(--table-odd-background-fill);
+}
+#suggestion-box > ul > li {
+    min-height: 19px;
+    list-style-type: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+}
+#suggestion-box > ul > li > * {
+    pointer-events: none;
+}
+#suggestion-box > ul > li.suggest {
+    padding: 0 8px;
+    overflow-wrap: break-word;
+    word-break: break-word;
+    hyphens: auto;
+    white-space: normal;
+}
+#suggestion-box > ul > li > .highlight {
+    width: 3px;
+    min-width: 3px;
+    align-self: stretch;
+}
+#suggestion-box > ul > li > .highlight.recommend {
+    background-color: var(--primary-500);
+}
+#suggestion-box > ul > li > .wiki {
+    color: #9192a7;
+    width: 20px;
+    min-width: 20px;
+    text-align: center;
+    margin: 0 0 0 2px;
+    border-radius: 4px;
+    pointer-events: initial;
+}
+#suggestion-box > ul > li > .wiki:hover {
+    background-color: #00000018;
+}
+#suggestion-box > ul > li > .title {
+    flex-grow: 1;
+    padding: 0 8px 0 8px;
+    overflow-wrap: break-word;
+    word-break: break-word;
+    hyphens: auto;
+    white-space: normal;
+}
+#suggestion-box > ul > li > .title > span {
+    margin: 0 6px;
+}
+#suggestion-box > ul > li > .title > span::before {
+    content: "→";
+}
+#suggestion-box > ul > li > .post-count {
+    font-size: calc(var(--body-text-size) - 1px);
+    color: #9192a7;
+    padding: 0 8px 0 6px;
+    width: 36px;
+    min-width: 36px;
+    text-align: right;
+}
+#suggestion-box > ul > li.notice {
+    color: var(--block-info-text-color);
+    cursor: inherit;
+    padding: 0 12px;
+    justify-content: center;
+}
+#suggestion-box > ul > li.selected {
+    background-color: var(--border-color-primary);
+}
+#suggestion-box .group0 {
+    color: oklch(69.5% 0.155 257.73);
+}
+#suggestion-box .group1 {
+    color: oklch(69.5% 0.155 28.82);
+}
+#suggestion-box .group3 {
+    color: oklch(69.5% 0.155 327.73);
+}
+#suggestion-box .group4 {
+    color: oklch(69.5% 0.155 144.81);
+}
+#suggestion-box .group5 {
+    color: oklch(69.5% 0.155 61.7);
+}
+#suggestion-box .groupcustom {
+    color: var(--body-text-color-subdued);
+}
+#suggestion-box .grouplora {
+    color: var(--body-text-color-subdued);
+}
+#suggestion-box > ul > li.contains {
+    text-decoration: line-through;
+}
+
+#suggestion-box > ul::-webkit-scrollbar-button {
+    display: none;
+}
+#suggestion-box > ul::-webkit-scrollbar {
+    width: 12px;
+}
+#suggestion-box > ul::-webkit-scrollbar-track {
+    border-radius: 0 4px 4px 0;
+    background-color: var(--border-color-primary);
+}
+#suggestion-box:not(:has(.tab-container.no-tab)) > ul::-webkit-scrollbar-track {
+    border-radius: 0 0 4px 0;
+}
+#suggestion-box > ul::-webkit-scrollbar-thumb {
+    border-radius: 6px;
+    background: var(--block-info-text-color);
+    border: 2px solid var(--border-color-primary);
+}
+
+#settings [id^=setting_prompt_pilot_group_] .settings-info {
+    border: inherit;
+    padding-bottom: 0;
+    padding-left: 0;
+}
