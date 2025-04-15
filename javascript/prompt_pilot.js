@@ -509,7 +509,7 @@
   var _prompt;
   var _caret;
   var _isComposing = false;
-  var _isChangingWeight = false;
+  var _isWeightChanging = false;
   var _activeWord;
   var _activePromptItemIndex;
   var _promptItems;
@@ -538,11 +538,11 @@
   function setComposing(isComposing2) {
     _isComposing = isComposing2;
   }
-  function isChangingWeight() {
-    return _isChangingWeight;
+  function isWeightChanging() {
+    return _isWeightChanging;
   }
-  function setChangingWeight(isChangingWeight2) {
-    _isChangingWeight = isChangingWeight2;
+  function setWeightChanging(isWeightChanging2) {
+    _isWeightChanging = isWeightChanging2;
   }
   function getActiveWord() {
     return _activeWord;
@@ -1527,8 +1527,10 @@
     updateContextPosition();
   }
   function handleInput() {
-    if (!isChangingWeight()) {
+    if (!isWeightChanging()) {
       updateContextPosition();
+    } else if (!isClosed()) {
+      close();
     }
   }
   function handleKeyDown(e) {
@@ -1537,7 +1539,7 @@
     }
     const key = e.key;
     if (e.ctrlKey && (key === "ArrowDown" /* ARROW_DOWN */ || key === "ArrowUp" /* ARROW_UP */)) {
-      setChangingWeight(true);
+      setWeightChanging(true);
     }
     setComposing(e.isComposing);
     if (isComposing()) {
@@ -1577,7 +1579,7 @@
     if (!window.pilotIsActive) {
       return;
     }
-    setChangingWeight(false);
+    setWeightChanging(false);
     setComposing(e.isComposing);
     if (isComposing()) {
       return;

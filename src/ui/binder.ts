@@ -108,8 +108,10 @@ function handleCompositionend(): void {
 }
 
 function handleInput(): void {
-    if (!promptState.isChangingWeight()) {
+    if (!promptState.isWeightChanging()) {
         context.updateContextPosition();
+    } else if (!contextState.isClosed()) {
+        context.close();
     }
 }
 
@@ -120,7 +122,7 @@ function handleKeyDown(e: KeyboardEvent): void {
 
     const key = e.key as KeyCode;
     if (e.ctrlKey && (key === KeyCode.ARROW_DOWN || key === KeyCode.ARROW_UP)) {
-        promptState.setChangingWeight(true);
+        promptState.setWeightChanging(true);
     }
 
     promptState.setComposing(e.isComposing);
@@ -166,7 +168,7 @@ function handleKeyUp(e: KeyboardEvent): void {
         return;
     }
 
-    promptState.setChangingWeight(false);
+    promptState.setWeightChanging(false);
 
     promptState.setComposing(e.isComposing);
     if (promptState.isComposing()) {
