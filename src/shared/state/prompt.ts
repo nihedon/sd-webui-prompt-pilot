@@ -3,7 +3,7 @@ import { PromptItem } from '../types/prompt';
 let _prompt: string;
 let _caret: number;
 let _isComposing = false;
-let _isChangingWeight = false;
+let _isWeightChanging = false;
 let _activeWord: string;
 let _activePromptItemIndex: number;
 let _promptItems: PromptItem[];
@@ -46,12 +46,12 @@ export function setComposing(isComposing: boolean): void {
     _isComposing = isComposing;
 }
 
-export function isChangingWeight(): boolean {
-    return _isChangingWeight;
+export function isWeightChanging(): boolean {
+    return _isWeightChanging;
 }
 
-export function setChangingWeight(isChangingWeight: boolean): void {
-    _isChangingWeight = isChangingWeight;
+export function setWeightChanging(isWeightChanging: boolean): void {
+    _isWeightChanging = isWeightChanging;
 }
 
 export function getActiveWord(): string {
