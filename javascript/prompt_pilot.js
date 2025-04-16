@@ -694,15 +694,16 @@
       return;
     }
     const usingExecCommand = window.opts[`${EXTENSION_ID}_using_execCommand`];
+    const textarea = getActiveTextarea();
     if (usingExecCommand) {
-      getActiveTextarea().focus();
-      getActiveTextarea().setSelectionRange(insertionInfo.range.start, insertionInfo.range.end);
+      textarea.focus();
+      textarea.setSelectionRange(insertionInfo.range.start, insertionInfo.range.end);
       document.execCommand("insertText", false, insertionInfo.insertText);
     } else {
-      const val = getActiveTextarea().value;
-      getActiveTextarea().value = val.slice(0, insertionInfo.range.start) + insertionInfo.insertText + val.slice(insertionInfo.range.end);
+      const val = textarea.value;
+      textarea.value = val.slice(0, insertionInfo.range.start) + insertionInfo.insertText + val.slice(insertionInfo.range.end);
     }
-    getActiveTextarea().selectionStart = getActiveTextarea().selectionEnd = insertionInfo.range.start + insertionInfo.insertText.length;
+    textarea.selectionStart = textarea.selectionEnd = insertionInfo.range.start + insertionInfo.insertText.length;
   }
   function getTagInsertionInfo(model) {
     let startPosition = getActivePromptItem().position;
@@ -1120,21 +1121,24 @@
     if (!window.pilotIsActive) {
       return;
     }
-    const activeTextarea = getActiveTextarea();
-    const dummy = activeTextarea.dummy;
+    const textarea = getActiveTextarea();
+    if (!textarea) {
+      return;
+    }
+    const dummy = textarea.dummy;
     const caret = dummy.caret;
-    const caretIndex = getActiveTextarea().selectionEnd;
-    const textBeforeCaret = getActiveTextarea().value.slice(0, caretIndex);
-    const textAfterCaret = getActiveTextarea().value.slice(caretIndex);
+    const caretIndex = textarea.selectionEnd;
+    const textBeforeCaret = textarea.value.slice(0, caretIndex);
+    const textAfterCaret = textarea.value.slice(caretIndex);
     dummy.textContent = textBeforeCaret;
     caret.textContent = textAfterCaret[0] || "\u200B";
     dummy.appendChild(caret);
     const rect = caret.getBoundingClientRect();
-    const computedStyle = window.getComputedStyle(getActiveTextarea());
+    const computedStyle = window.getComputedStyle(textarea);
     const lineHeight = parseFloat(computedStyle.lineHeight.replace(/[^\d\.]+/, ""));
-    const textareaRect = getActiveTextarea().getBoundingClientRect();
-    const x = rect.left - textareaRect.left - getActiveTextarea().scrollLeft;
-    const y = rect.top - textareaRect.top - getActiveTextarea().scrollTop + lineHeight;
+    const textareaRect = textarea.getBoundingClientRect();
+    const x = rect.left - textareaRect.left - textarea.scrollLeft;
+    const y = rect.top - textareaRect.top - textarea.scrollTop + lineHeight;
     const component = getComponent();
     component.style.transform = `translate(${x}px, ${y}px)`;
     debounceUpdateContext();
@@ -1154,7 +1158,8 @@
       showContext(buildLoraAutocomplete(), 1 /* WithoutTabs */, "Initializing database...");
       return;
     }
-    updatePromptState(getActiveTextarea().value, getActiveTextarea().selectionEnd);
+    const textarea = getActiveTextarea();
+    updatePromptState(textarea.value, textarea.selectionEnd);
     if (isMetaBlock()) {
       hide();
       return;
@@ -1518,7 +1523,8 @@
     if (e.ctrlKey) {
       setTimeout(() => {
         processingPromise = new Promise((resolve) => {
-          updatePromptState(getActiveTextarea().value, getActiveTextarea().selectionEnd);
+          const textarea = getActiveTextarea();
+          updatePromptState(textarea.value, textarea.selectionEnd);
           resolve(getActivePromptItem());
         });
       }, 50);

@@ -81,7 +81,8 @@ function handleMouseDown(e: MouseEvent): void {
         // waiting for the textarea to be updated
         setTimeout(() => {
             processingPromise = new Promise((resolve) => {
-                parser.updatePromptState(contextState.getActiveTextarea().value, contextState.getActiveTextarea().selectionEnd);
+                const textarea = contextState.getActiveTextarea()!;
+                parser.updatePromptState(textarea.value, textarea.selectionEnd);
                 resolve(promptState.getActivePromptItem());
             });
         }, 50);

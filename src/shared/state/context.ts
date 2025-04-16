@@ -20,7 +20,7 @@ export function setComponent(component: HTMLDivElement): void {
     _component = component;
 }
 
-export function getActiveTextarea(): PilotTextArea {
+export function getActiveTextarea(): PilotTextArea | undefined {
     return _activeTextarea;
 }
 

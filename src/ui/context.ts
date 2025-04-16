@@ -115,26 +115,29 @@ export function updateContextPosition() {
         return;
     }
 
-    const activeTextarea = contextState.getActiveTextarea();
-    const dummy = activeTextarea.dummy;
+    const textarea = contextState.getActiveTextarea();
+    if (!textarea) {
+        return;
+    }
+    const dummy = textarea.dummy;
     const caret = dummy.caret;
 
-    const caretIndex = contextState.getActiveTextarea().selectionEnd;
-    const textBeforeCaret = contextState.getActiveTextarea().value.slice(0, caretIndex);
-    const textAfterCaret = contextState.getActiveTextarea().value.slice(caretIndex);
+    const caretIndex = textarea.selectionEnd;
+    const textBeforeCaret = textarea.value.slice(0, caretIndex);
+    const textAfterCaret = textarea.value.slice(caretIndex);
 
     dummy.textContent = textBeforeCaret;
     caret.textContent = textAfterCaret[0] || '\u200b';
     dummy.appendChild(caret);
 
     const rect = caret.getBoundingClientRect();
-    const computedStyle = window.getComputedStyle(contextState.getActiveTextarea());
+    const computedStyle = window.getComputedStyle(textarea);
 
     const lineHeight = parseFloat(computedStyle.lineHeight.replace(/[^\d\.]+/, ''));
 
-    const textareaRect = contextState.getActiveTextarea().getBoundingClientRect();
-    const x = rect.left - textareaRect.left - contextState.getActiveTextarea().scrollLeft;
-    const y = rect.top - textareaRect.top - contextState.getActiveTextarea().scrollTop + lineHeight;
+    const textareaRect = textarea.getBoundingClientRect();
+    const x = rect.left - textareaRect.left - textarea.scrollLeft;
+    const y = rect.top - textareaRect.top - textarea.scrollTop + lineHeight;
 
     const component = contextState.getComponent();
     component.style.transform = `translate(${x}px, ${y}px)`;
@@ -160,7 +163,8 @@ function updateContext() {
         return;
     }
 
-    parser.updatePromptState(contextState.getActiveTextarea().value, contextState.getActiveTextarea().selectionEnd);
+    const textarea = contextState.getActiveTextarea()!;
+    parser.updatePromptState(textarea.value, textarea.selectionEnd);
 
     if (promptState.isMetaBlock()) {
         hide();
@@ -316,7 +320,7 @@ function buildSuggestion(): DocumentFragment {
 }
 
 function adjustActiveTextarea() {
-    const rect = contextState.getActiveTextarea().getBoundingClientRect();
+    const rect = contextState.getActiveTextarea()!.getBoundingClientRect();
     const component = contextState.getComponent();
     component.style.top = `${rect.top + window.scrollY}px`;
     component.style.left = `${rect.left + window.scrollX}px`;

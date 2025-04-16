@@ -33,16 +33,17 @@ export function insertWordIntoPrompt(result: Result<TagModel | LoraModel | Sugge
     }
 
     const usingExecCommand = window.opts[`${EXTENSION_ID}_using_execCommand`] as boolean;
+
+    const textarea = contextState.getActiveTextarea()!;
     if (usingExecCommand) {
-        contextState.getActiveTextarea().focus();
-        contextState.getActiveTextarea().setSelectionRange(insertionInfo.range.start, insertionInfo.range.end);
+        textarea.focus();
+        textarea.setSelectionRange(insertionInfo.range.start, insertionInfo.range.end);
         document.execCommand('insertText', false, insertionInfo.insertText);
     } else {
-        const val = contextState.getActiveTextarea().value;
-        contextState.getActiveTextarea().value = val.slice(0, insertionInfo.range.start) + insertionInfo.insertText + val.slice(insertionInfo.range.end);
+        const val = textarea.value;
+        textarea.value = val.slice(0, insertionInfo.range.start) + insertionInfo.insertText + val.slice(insertionInfo.range.end);
     }
-    contextState.getActiveTextarea().selectionStart = contextState.getActiveTextarea().selectionEnd =
-        insertionInfo.range.start + insertionInfo.insertText.length;
+    textarea.selectionStart = textarea.selectionEnd = insertionInfo.range.start + insertionInfo.insertText.length;
 }
 
 function getTagInsertionInfo(model: TagModel): InsertionInfo {
