@@ -587,7 +587,7 @@
     _prependSpace = prependSpace;
   }
 
-  // src/utils/index.ts
+  // src/shared/util.ts
   function debounceWithLeadingTrailing(func, wait) {
     let timeout = null;
     let lastCallTime = null;
@@ -612,6 +612,20 @@
         hasPendingTrailing = false;
       }, wait);
     };
+  }
+  async function fetchWithRetry(input, init, retries = 10, delay = 1e3) {
+    for (let attempt = 0; attempt <= retries; attempt++) {
+      try {
+        const res = await fetch(input, init);
+        if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+        return res;
+      } catch (e) {
+        if (attempt === retries) throw e;
+        console.warn(`[Prompt Pilot] Retrying... (${attempt + 1}/${retries})`);
+        await new Promise((resolve) => setTimeout(resolve, delay));
+      }
+    }
+    throw new Error("Unexpected error in fetchWithRetry");
   }
   function formatNumberWithUnits(num) {
     if (Math.abs(num) >= 1e12) {
@@ -1618,7 +1632,7 @@
           });
         });
       });
-      fetch(`${API_PREFIX}/init`, { method: "POST" }).then(async (res) => {
+      fetchWithRetry(`${API_PREFIX}/init`, { method: "POST" }).then(async (res) => {
         const resData = await res.json();
         initializedPromise.then(() => {
           initializeTagModels(resData);

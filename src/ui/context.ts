@@ -8,7 +8,7 @@ import * as contextState from 'shared/state/context';
 import * as promptState from 'shared/state/prompt';
 import { PromptItemType } from 'shared/types/prompt';
 import { LoraResult, SuggestionResult, TagResult } from 'shared/types/model';
-import { debounceWithLeadingTrailing, escapeRegex, formatNumberWithUnits } from 'utils/index';
+import { debounceWithLeadingTrailing, escapeRegex, formatNumberWithUnits } from 'shared/util';
 
 enum ContextType {
     WithTabs,

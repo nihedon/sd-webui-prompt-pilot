@@ -3,7 +3,7 @@ import { EXTENSION_ID } from 'shared/const/common';
 import * as contextState from 'shared/state/context';
 import * as promptState from 'shared/state/prompt';
 import { LoraModel, LoraResult, Result, SuggestionModel, SuggestionResult, TagModel, TagResult } from 'shared/types/model';
-import { escapePrompt, escapeRegex, splitStringWithIndices, unescapePrompt } from 'utils/index';
+import { escapePrompt, escapeRegex, splitStringWithIndices, unescapePrompt } from 'shared/util';
 
 interface InsertionInfo {
     range: {

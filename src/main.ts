@@ -6,6 +6,7 @@ import * as binder from 'ui/binder';
 import * as context from 'ui/context';
 import * as contextState from 'shared/state/context';
 import { ResponseData } from 'shared/types/api';
+import { fetchWithRetry } from 'shared/util';
 
 declare function gradioApp(): HTMLElement;
 declare function onUiLoaded(callback: VoidFunction): void;
@@ -39,7 +40,7 @@ onUiLoaded(() => {
             });
         });
 
-        fetch(`${API_PREFIX}/init`, { method: 'POST' }).then(async (res) => {
+        fetchWithRetry(`${API_PREFIX}/init`, { method: 'POST' }).then(async (res) => {
             const resData: ResponseData | undefined = await res.json();
             initializedPromise.then(() => {
                 db_tag.initializeTagModels(resData);
