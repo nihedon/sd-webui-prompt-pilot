@@ -1,4 +1,4 @@
-import { TagResult, LoraResult, SuggestionResult } from 'types/model';
+import { LoraResult, SuggestionResult, TagResult } from '../types/model';
 
 let _component: HTMLDivElement;
 let _activeTextarea: PilotTextArea;

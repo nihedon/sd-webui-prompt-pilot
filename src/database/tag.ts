@@ -1,7 +1,6 @@
-import { EXTENSION_ID } from 'shared/const/common';
-import { ResponseData } from 'shared/types/api';
-import { TagModel } from 'shared/types/model';
-import { TagResult } from 'shared/types/model';
+import { EXTENSION_ID } from '../shared/const/common';
+import { ResponseData } from '../shared/types/api';
+import { TagModel, TagResult } from '../shared/types/model';
 
 let errorFlag = false;
 

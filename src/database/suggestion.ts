@@ -1,6 +1,5 @@
-import { ResponseData } from 'shared/types/api';
-import { SuggestionModel } from 'shared/types/model';
-import { SuggestionResult } from 'shared/types/model';
+import { ResponseData } from '../shared/types/api';
+import { SuggestionModel, SuggestionResult } from '../shared/types/model';
 
 let errorFlag = false;
 

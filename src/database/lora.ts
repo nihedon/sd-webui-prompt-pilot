@@ -1,7 +1,6 @@
-import { EXTENSION_ID } from 'shared/const/common';
-import { ResponseData } from 'shared/types/api';
-import { LoraModel } from 'shared/types/model';
-import { LoraResult } from 'shared/types/model';
+import { EXTENSION_ID } from '../shared/const/common';
+import { ResponseData } from '../shared/types/api';
+import { LoraModel, LoraResult } from '../shared/types/model';
 
 let errorFlag = false;
 

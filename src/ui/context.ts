@@ -1,14 +1,14 @@
-import * as db_lora from 'database/lora';
-import * as db_sg from 'database/suggestion';
-import * as db_tag from 'database/tag';
-import * as editor from 'prompt/editor';
-import * as parser from 'prompt/parser';
-import { EXTENSION_ID } from 'shared/const/common';
-import * as contextState from 'shared/state/context';
-import * as promptState from 'shared/state/prompt';
-import { PromptItemType } from 'shared/types/prompt';
-import { LoraResult, SuggestionResult, TagResult } from 'shared/types/model';
-import { debounceWithLeadingTrailing, escapeRegex, formatNumberWithUnits } from 'shared/util';
+import * as db_lora from '../database/lora';
+import * as db_sg from '../database/suggestion';
+import * as db_tag from '../database/tag';
+import * as editor from '../prompt/editor';
+import * as parser from '../prompt/parser';
+import { EXTENSION_ID } from '../shared/const/common';
+import * as contextState from '../shared/state/context';
+import * as promptState from '../shared/state/prompt';
+import { LoraResult, SuggestionResult, TagResult } from '../shared/types/model';
+import { PromptItemType } from '../shared/types/prompt';
+import { debounceWithLeadingTrailing, escapeRegex, formatNumberWithUnits } from '../shared/util';
 
 enum ContextType {
     WithTabs,

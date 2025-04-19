@@ -163,3 +163,4 @@ cython_debug/
 node_modules/
 cache.db*
 tags/
+package-lock.json

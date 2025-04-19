@@ -67,7 +67,7 @@ export function updatePromptState(prompt: string, caret: number): void {
     promptState.initialize(prompt, caret);
 
     prompt = prompt.replace(matchMetaKeywordRegex, (match) => ','.padEnd(match.length, '\0'));
-    prompt = prompt.replace(dynamicPromptRegex, (match, group1, group2) => {
+    prompt = prompt.replace(dynamicPromptRegex, (_, group1, group2) => {
         const stars = '\0'.repeat(group1.length);
         return `{${stars}${group2}}`;
     });
