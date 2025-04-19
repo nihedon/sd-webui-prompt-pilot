@@ -1,12 +1,12 @@
-import { API_PREFIX, EXTENSION_ID } from 'shared/const/common';
-import * as db_tag from 'database/tag';
-import * as db_lora from 'database/lora';
-import * as db_sg from 'database/suggestion';
-import * as binder from 'ui/binder';
-import * as context from 'ui/context';
-import * as contextState from 'shared/state/context';
-import { ResponseData } from 'shared/types/api';
-import { fetchWithRetry } from 'shared/util';
+import * as db_lora from './database/lora';
+import * as db_sg from './database/suggestion';
+import * as db_tag from './database/tag';
+import { API_PREFIX, EXTENSION_ID } from './shared/const/common';
+import * as contextState from './shared/state/context';
+import { ResponseData } from './shared/types/api';
+import { fetchWithRetry } from './shared/util';
+import * as binder from './ui/binder';
+import * as context from './ui/context';
 
 declare function gradioApp(): HTMLElement;
 declare function onUiLoaded(callback: VoidFunction): void;

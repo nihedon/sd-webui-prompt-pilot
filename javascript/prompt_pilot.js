@@ -78,21 +78,123 @@
     }
   };
 
-  // src/database/tag.ts
+  // src/database/lora.ts
   var errorFlag = false;
-  var tagModels;
-  var tagIndex;
-  var alwaysUnderscoreTags;
-  var alwaysSpaceTags;
+  var loraModels;
   function isLoaded() {
-    return tagModels && tagIndex;
+    return loraModels;
   }
   function hasError() {
     return errorFlag;
   }
-  function initializeTagModels(resData) {
+  function initializeLoraModels(resData) {
     if (!resData) {
       errorFlag = true;
+      return;
+    }
+    try {
+      loraModels = [];
+      Object.entries(resData.loraModels).forEach(([lora_name, data]) => {
+        loraModels.push({
+          value: lora_name,
+          group: "lora",
+          searchWords: data.search_words,
+          previewFile: data.preview_file
+        });
+      });
+    } catch (e) {
+      console.error(e);
+      errorFlag = true;
+    }
+  }
+  function searchLora(query) {
+    const queries = query.toLowerCase().split(/[ _-]/g).filter((q) => q.trim() !== "");
+    let resultSet = [];
+    loraModels.forEach((lora) => {
+      const matchWordSet = /* @__PURE__ */ new Set();
+      for (const word of lora.searchWords) {
+        const flatWord = word.replace(/[ _-]/g, "");
+        queries.forEach((q) => {
+          if (flatWord.includes(q)) {
+            matchWordSet.add(q);
+          }
+        });
+      }
+      if (queries.length === matchWordSet.size) {
+        const result = new LoraResult(lora);
+        result.matchWords = [...matchWordSet];
+        resultSet.push(result);
+      }
+    });
+    resultSet = resultSet.sort((a, b) => a.compare(b, query, queries));
+    let groupCounter = window.opts[`${EXTENSION_ID}_max_results_grouplora`];
+    return resultSet.filter(() => {
+      if (groupCounter > 0) {
+        groupCounter -= 1;
+        return true;
+      }
+      return false;
+    });
+  }
+
+  // src/database/suggestion.ts
+  var errorFlag2 = false;
+  var suggestionModels;
+  function isLoaded2() {
+    return suggestionModels;
+  }
+  function hasError2() {
+    return errorFlag2;
+  }
+  function initializeSuggestionModels(resData) {
+    if (!resData) {
+      errorFlag2 = true;
+      return;
+    }
+    try {
+      suggestionModels = {};
+      Object.entries(resData.suggestionModels).forEach(([word, record]) => {
+        const sorted = Object.entries(record).sort(([, count1], [, count2]) => count2 - count1);
+        suggestionModels[word] = sorted.map(([word2, count]) => ({
+          value: word2,
+          count
+        }));
+      });
+    } catch (e) {
+      console.error(e);
+      errorFlag2 = true;
+    }
+  }
+  function searchSuggestion(nearestTag, existTags) {
+    if (!nearestTag) {
+      return [];
+    }
+    const suggestions = suggestionModels[nearestTag];
+    if (!suggestions) return [];
+    const result = [];
+    for (const candidate of suggestions) {
+      if (!existTags.has(candidate.value)) {
+        result.push(new SuggestionResult(candidate));
+      }
+    }
+    return result;
+  }
+
+  // src/database/tag.ts
+  var errorFlag3 = false;
+  var tagModels;
+  var tagIndex;
+  var alwaysUnderscoreTags;
+  var alwaysSpaceTags;
+  function isLoaded3() {
+    return tagModels && tagIndex;
+  }
+  function hasError3() {
+    return errorFlag3;
+  }
+  function initializeTagModels(resData) {
+    if (!resData) {
+      errorFlag3 = true;
       return;
     }
     try {
@@ -147,7 +249,7 @@
       buildTagIndex(tagModels);
     } catch (e) {
       console.error(e);
-      errorFlag = true;
+      errorFlag3 = true;
     }
   }
   function getPrefixes(tag, maxLen = 3) {
@@ -316,108 +418,6 @@
     });
   }
 
-  // src/database/lora.ts
-  var errorFlag2 = false;
-  var loraModels;
-  function isLoaded2() {
-    return loraModels;
-  }
-  function hasError2() {
-    return errorFlag2;
-  }
-  function initializeLoraModels(resData) {
-    if (!resData) {
-      errorFlag2 = true;
-      return;
-    }
-    try {
-      loraModels = [];
-      Object.entries(resData.loraModels).forEach(([lora_name, data]) => {
-        loraModels.push({
-          value: lora_name,
-          group: "lora",
-          searchWords: data.search_words,
-          previewFile: data.preview_file
-        });
-      });
-    } catch (e) {
-      console.error(e);
-      errorFlag2 = true;
-    }
-  }
-  function searchLora(query) {
-    const queries = query.toLowerCase().split(/[ _-]/g).filter((q) => q.trim() !== "");
-    let resultSet = [];
-    loraModels.forEach((lora) => {
-      const matchWordSet = /* @__PURE__ */ new Set();
-      for (const word of lora.searchWords) {
-        const flatWord = word.replace(/[ _-]/g, "");
-        queries.forEach((q) => {
-          if (flatWord.includes(q)) {
-            matchWordSet.add(q);
-          }
-        });
-      }
-      if (queries.length === matchWordSet.size) {
-        const result = new LoraResult(lora);
-        result.matchWords = [...matchWordSet];
-        resultSet.push(result);
-      }
-    });
-    resultSet = resultSet.sort((a, b) => a.compare(b, query, queries));
-    let groupCounter = window.opts[`${EXTENSION_ID}_max_results_grouplora`];
-    return resultSet.filter(() => {
-      if (groupCounter > 0) {
-        groupCounter -= 1;
-        return true;
-      }
-      return false;
-    });
-  }
-
-  // src/database/suggestion.ts
-  var errorFlag3 = false;
-  var suggestionModels;
-  function isLoaded3() {
-    return suggestionModels;
-  }
-  function hasError3() {
-    return errorFlag3;
-  }
-  function initializeSuggestionModels(resData) {
-    if (!resData) {
-      errorFlag3 = true;
-      return;
-    }
-    try {
-      suggestionModels = {};
-      Object.entries(resData.suggestionModels).forEach(([word, record]) => {
-        const sorted = Object.entries(record).sort(([, count1], [, count2]) => count2 - count1);
-        suggestionModels[word] = sorted.map(([word2, count]) => ({
-          value: word2,
-          count
-        }));
-      });
-    } catch (e) {
-      console.error(e);
-      errorFlag3 = true;
-    }
-  }
-  function searchSuggestion(nearestTag, existTags) {
-    if (!nearestTag) {
-      return [];
-    }
-    const suggestions = suggestionModels[nearestTag];
-    if (!suggestions) return [];
-    const result = [];
-    for (const candidate of suggestions) {
-      if (!existTags.has(candidate.value)) {
-        result.push(new SuggestionResult(candidate));
-      }
-    }
-    return result;
-  }
-
   // src/shared/state/context.ts
   var _component;
   var _activeTextarea;
@@ -503,88 +503,6 @@
   }
   function setActiveTab(activeTabElement) {
     _activeTab = activeTabElement;
-  }
-
-  // src/shared/state/prompt.ts
-  var _prompt;
-  var _caret;
-  var _isComposing = false;
-  var _isWeightChanging = false;
-  var _activeWord;
-  var _activePromptItemIndex;
-  var _promptItems;
-  var _isMetaBlock;
-  var _prependComma;
-  var _prependSpace;
-  function initialize(prompt, caret) {
-    _prompt = prompt;
-    _caret = caret;
-    _activeWord = "";
-    _activePromptItemIndex = -1;
-    _promptItems = [];
-    _isMetaBlock = false;
-    _prependComma = false;
-    _prependSpace = false;
-  }
-  function getPrompt() {
-    return _prompt;
-  }
-  function getCaret() {
-    return _caret;
-  }
-  function isComposing() {
-    return _isComposing;
-  }
-  function setComposing(isComposing2) {
-    _isComposing = isComposing2;
-  }
-  function isWeightChanging() {
-    return _isWeightChanging;
-  }
-  function setWeightChanging(isWeightChanging2) {
-    _isWeightChanging = isWeightChanging2;
-  }
-  function getActiveWord() {
-    return _activeWord;
-  }
-  function setActiveWord(activeWord) {
-    _activeWord = activeWord;
-  }
-  function getActivePromptItemIndex() {
-    return _activePromptItemIndex;
-  }
-  function setActivePromptItemIndex(activeTagIndex) {
-    _activePromptItemIndex = activeTagIndex;
-  }
-  function getPromptItemList() {
-    return _promptItems;
-  }
-  function getPromptItem(index) {
-    return _promptItems[index];
-  }
-  function getActivePromptItem() {
-    return _promptItems[_activePromptItemIndex];
-  }
-  function addPromptItem(promptItem) {
-    _promptItems.push(promptItem);
-  }
-  function isMetaBlock() {
-    return _isMetaBlock;
-  }
-  function setMetaBlock(isMetaBlock2) {
-    _isMetaBlock = isMetaBlock2;
-  }
-  function needPrependComma() {
-    return _prependComma;
-  }
-  function setNeedPrependComma(prependComma) {
-    _prependComma = prependComma;
-  }
-  function needPrependSpace() {
-    return _prependSpace;
-  }
-  function setNeedPrependSpace(prependSpace) {
-    _prependSpace = prependSpace;
   }
 
   // src/shared/util.ts
@@ -673,6 +591,88 @@
     }
     result.push({ word: input.slice(lastIndex), position: lastIndex });
     return result;
+  }
+
+  // src/shared/state/prompt.ts
+  var _prompt;
+  var _caret;
+  var _isComposing = false;
+  var _isWeightChanging = false;
+  var _activeWord;
+  var _activePromptItemIndex;
+  var _promptItems;
+  var _isMetaBlock;
+  var _prependComma;
+  var _prependSpace;
+  function initialize(prompt, caret) {
+    _prompt = prompt;
+    _caret = caret;
+    _activeWord = "";
+    _activePromptItemIndex = -1;
+    _promptItems = [];
+    _isMetaBlock = false;
+    _prependComma = false;
+    _prependSpace = false;
+  }
+  function getPrompt() {
+    return _prompt;
+  }
+  function getCaret() {
+    return _caret;
+  }
+  function isComposing() {
+    return _isComposing;
+  }
+  function setComposing(isComposing2) {
+    _isComposing = isComposing2;
+  }
+  function isWeightChanging() {
+    return _isWeightChanging;
+  }
+  function setWeightChanging(isWeightChanging2) {
+    _isWeightChanging = isWeightChanging2;
+  }
+  function getActiveWord() {
+    return _activeWord;
+  }
+  function setActiveWord(activeWord) {
+    _activeWord = activeWord;
+  }
+  function getActivePromptItemIndex() {
+    return _activePromptItemIndex;
+  }
+  function setActivePromptItemIndex(activeTagIndex) {
+    _activePromptItemIndex = activeTagIndex;
+  }
+  function getPromptItemList() {
+    return _promptItems;
+  }
+  function getPromptItem(index) {
+    return _promptItems[index];
+  }
+  function getActivePromptItem() {
+    return _promptItems[_activePromptItemIndex];
+  }
+  function addPromptItem(promptItem) {
+    _promptItems.push(promptItem);
+  }
+  function isMetaBlock() {
+    return _isMetaBlock;
+  }
+  function setMetaBlock(isMetaBlock2) {
+    _isMetaBlock = isMetaBlock2;
+  }
+  function needPrependComma() {
+    return _prependComma;
+  }
+  function setNeedPrependComma(prependComma) {
+    _prependComma = prependComma;
+  }
+  function needPrependSpace() {
+    return _prependSpace;
+  }
+  function setNeedPrependSpace(prependSpace) {
+    _prependSpace = prependSpace;
   }
 
   // src/prompt/editor.ts
@@ -853,7 +853,7 @@
   function updatePromptState(prompt, caret) {
     initialize(prompt, caret);
     prompt = prompt.replace(matchMetaKeywordRegex, (match) => ",".padEnd(match.length, "\0"));
-    prompt = prompt.replace(dynamicPromptRegex, (match, group1, group2) => {
+    prompt = prompt.replace(dynamicPromptRegex, (_, group1, group2) => {
       const stars = "\0".repeat(group1.length);
       return `{${stars}${group2}}`;
     });
@@ -1150,11 +1150,11 @@
     if (isComposing()) {
       return;
     }
-    if (hasError() || hasError2() || hasError3()) {
+    if (hasError3() || hasError() || hasError2()) {
       showContext(buildLoraAutocomplete(), 1 /* WithoutTabs */, "An error occurred. Please reload the page.");
       return;
     }
-    if (!isLoaded() || !isLoaded2() || !isLoaded3()) {
+    if (!isLoaded3() || !isLoaded() || !isLoaded2()) {
       showContext(buildLoraAutocomplete(), 1 /* WithoutTabs */, "Initializing database...");
       return;
     }

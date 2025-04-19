@@ -1,10 +1,10 @@
-import * as editor from 'prompt/editor';
-import * as parser from 'prompt/parser';
-import * as contextState from 'shared/state/context';
-import * as promptState from 'shared/state/prompt';
-import { PromptItem, PromptItemType } from 'shared/types/prompt';
-import { TagResult } from 'shared/types/model';
-import * as context from 'ui/context';
+import * as editor from '../prompt/editor';
+import * as parser from '../prompt/parser';
+import * as contextState from '../shared/state/context';
+import * as promptState from '../shared/state/prompt';
+import { TagResult } from '../shared/types/model';
+import { PromptItem, PromptItemType } from '../shared/types/prompt';
+import * as context from '../ui/context';
 
 let isStylesheetInjected = false;
 let processingPromise: Promise<PromptItem> | undefined;
