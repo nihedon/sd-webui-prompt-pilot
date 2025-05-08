@@ -7,6 +7,7 @@ import { ResponseData } from './shared/types/api';
 import { fetchWithRetry } from './shared/util';
 import * as binder from './ui/binder';
 import * as context from './ui/context';
+import { gunzipSync } from 'fflate';
 
 declare function gradioApp(): HTMLElement;
 declare function onUiLoaded(callback: VoidFunction): void;
@@ -40,8 +41,18 @@ onUiLoaded(() => {
             });
         });
 
-        fetchWithRetry(`${API_PREFIX}/init`, { method: 'POST' }).then(async (res) => {
-            const resData: ResponseData | undefined = await res.json();
+        fetchWithRetry(`file=extensions/sd-webui-prompt-pilot/models.json.gz`, {}).then(async (res) => {
+            if (!res.ok) {
+                db_tag.setErrorFlag(true);
+                db_lora.setErrorFlag(true);
+                db_sg.setErrorFlag(true);
+            }
+
+            const buffer = new Uint8Array(await res.arrayBuffer());
+            const decompressedBuffer = gunzipSync(buffer);
+            const jsonString = new TextDecoder('utf-8').decode(decompressedBuffer);
+            const resData = JSON.parse(jsonString);
+
             initializedPromise.then(() => {
                 db_tag.initializeTagModels(resData);
                 db_lora.initializeLoraModels(resData);

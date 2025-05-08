@@ -13,6 +13,10 @@ export function hasError() {
     return errorFlag;
 }
 
+export function setErrorFlag(flag: boolean) {
+    errorFlag = flag;
+}
+
 export function initializeSuggestionModels(resData: ResponseData | undefined): void {
     if (!resData) {
         errorFlag = true;

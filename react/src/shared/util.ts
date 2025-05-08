@@ -40,17 +40,18 @@ export function debounceWithLeadingTrailing<T extends (...args: any[]) => any>(f
     };
 }
 
-export async function fetchWithRetry(input: RequestInfo, init: RequestInit, retries: number = 10, delay: number = 1000): Promise<Response> {
+export async function fetchWithRetry(input: RequestInfo, init: RequestInit, retries: number = 5, delay: number = 1000): Promise<Response> {
     for (let attempt = 0; attempt <= retries; attempt++) {
-        try {
-            const res = await fetch(input, init);
-            if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+        const res = await fetch(input, init);
+        if (res.ok) {
             return res;
-        } catch (e) {
-            if (attempt === retries) throw e;
-            console.warn(`[Prompt Pilot] Retrying... (${attempt + 1}/${retries})`);
-            await new Promise((resolve) => setTimeout(resolve, delay));
         }
+        if (attempt === retries) {
+            console.error(`[Prompt Pilot] Fetch failed after ${retries} attempts`);
+            return res;
+        }
+        console.warn(`[Prompt Pilot] Retrying... (${attempt + 1}/${retries})`);
+        await new Promise((resolve) => setTimeout(resolve, delay));
     }
     throw new Error('Unexpected error in fetchWithRetry');
 }

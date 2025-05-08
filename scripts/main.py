@@ -1,4 +1,5 @@
 import functools
+import gzip
 from itertools import repeat
 import json
 import os
@@ -414,7 +415,6 @@ def _get_prompt(file: str) -> str:
 def on_app_started(__: gr.Blocks, app: FastAPI) -> None:
     enabled = shared.opts.data.get(f'{EXTENSION_ID}_enabled', True)
     if enabled:
-        create_table()
         executor = ThreadPoolExecutor()
         future: Future = executor.submit(init)
 
@@ -541,6 +541,11 @@ tag_sources = []
 for dir in os.listdir(os.path.join(extension_dir, "tags")):
     if dir != ".git":
         tag_sources.append(dir)
+
+create_table()
+output_path = os.path.join(extension_dir, "models.json.gz")
+with gzip.open(output_path, "wt", encoding="utf-8") as f:
+    json.dump(init(), f, ensure_ascii=True, separators=(',', ':'))
 
 script_callbacks.on_ui_settings(on_ui_settings)
 script_callbacks.on_app_started(on_app_started)

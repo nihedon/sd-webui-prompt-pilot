@@ -1,4 +1,3 @@
-# DB操作をまとめたDBManagerクラス
 import sqlite3
 
 

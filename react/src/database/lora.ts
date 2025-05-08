@@ -14,6 +14,10 @@ export function hasError() {
     return errorFlag;
 }
 
+export function setErrorFlag(flag: boolean) {
+    errorFlag = flag;
+}
+
 export function initializeLoraModels(resData: ResponseData | undefined): void {
     if (!resData) {
         errorFlag = true;
