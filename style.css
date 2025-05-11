@@ -183,3 +183,8 @@
     padding-bottom: 0;
     padding-left: 0;
 }
+.prompt_pilot-dummy {
+    position: absolute !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+}

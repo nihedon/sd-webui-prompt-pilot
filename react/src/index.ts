@@ -1,77 +1,84 @@
-import * as db_lora from './database/lora';
-import * as db_sg from './database/suggestion';
-import * as db_tag from './database/tag';
-import { API_PREFIX, EXTENSION_ID } from './shared/const/common';
-import * as contextState from './shared/state/context';
-import { ResponseData } from './shared/types/api';
-import { fetchWithRetry } from './shared/util';
-import * as binder from './ui/binder';
-import * as context from './ui/context';
-import { gunzipSync } from 'fflate';
+import * as db_lora from '@/services/loraService';
+import { API_PREFIX, TEXTAREA_SELECTOR } from '@/const/common';
+import { ResponseData } from '@/types/api';
+import { initialize } from '@/components/core/App';
 
 declare function gradioApp(): HTMLElement;
 declare function onUiLoaded(callback: VoidFunction): void;
-declare function onOptionsChanged(callback: VoidFunction): void;
 
 window.pilotIsActive = true;
 
-export let resolveInitialized: ((value: boolean) => void) | null;
-const initializedPromise = new Promise<boolean>((resolve) => {
-    resolveInitialized = resolve;
-});
-
 onUiLoaded(() => {
-    try {
-        context.createContext(document.body);
+    const promptTextareas = gradioApp().querySelectorAll<HTMLTextAreaElement>(TEXTAREA_SELECTOR);
+    const computedStyle = getComputedStyle(promptTextareas[0]);
+    let cssStyleString = '';
+    const ignoredCssProperties = new Set<string>(['width', 'height', 'inline-size', 'block-size', 'resize']);
+    for (let i = 0; i < computedStyle.length; i++) {
+        const prop = computedStyle[i];
+        if (!ignoredCssProperties.has(prop)) {
+            const value = computedStyle.getPropertyValue(prop);
+            cssStyleString += `${prop}: ${value};`;
+        }
+    }
 
-        const textareaSelector = "*:is([id*='_toprow'] [id*='_prompt'], .prompt) textarea";
-        const promptTextareas = gradioApp().querySelectorAll<HTMLTextAreaElement>(textareaSelector);
-        promptTextareas.forEach((textarea) => {
-            binder.bind(textarea as PilotTextArea);
-        });
+    promptTextareas.forEach((_textarea) => {
+        const textarea = _textarea as PilotTextArea;
+        const dummyDiv = document.createElement('div') as HTMLDivElement & { caret: HTMLSpanElement };
+        dummyDiv.className = 'prompt_pilot-dummy';
+        textarea.parentNode?.insertBefore(dummyDiv, textarea.nextSibling);
+        textarea.dummy = dummyDiv;
 
-        const refreshButtonSelector = '.extra-network-control--refresh';
-        const refreshButtons = gradioApp().querySelectorAll<HTMLDivElement>(refreshButtonSelector);
-        refreshButtons.forEach((button) => {
-            button.addEventListener('click', () => {
-                fetch(`${API_PREFIX}/refresh`, { method: 'POST' }).then(async (res) => {
-                    const resData: ResponseData | undefined = await res.json();
-                    db_lora.initializeLoraModels(resData);
-                });
-            });
-        });
+        const caretSpan = document.createElement('span');
+        dummyDiv.caret = caretSpan;
+    });
 
-        fetchWithRetry(`file=extensions/sd-webui-prompt-pilot/models.json.gz`, {}).then(async (res) => {
-            if (!res.ok) {
-                db_tag.setErrorFlag(true);
-                db_lora.setErrorFlag(true);
-                db_sg.setErrorFlag(true);
-            }
+    const cssStyleSheet = new CSSStyleSheet();
+    cssStyleSheet.replaceSync(`.prompt_pilot-dummy {${cssStyleString}}`);
+    document.adoptedStyleSheets = [...document.adoptedStyleSheets, cssStyleSheet];
 
-            const buffer = new Uint8Array(await res.arrayBuffer());
-            const decompressedBuffer = gunzipSync(buffer);
-            const jsonString = new TextDecoder('utf-8').decode(decompressedBuffer);
-            const resData = JSON.parse(jsonString);
+    const promptPilotContainer = document.createElement('div');
+    promptPilotContainer.id = 'prompt-pilot-container';
+    gradioApp().appendChild(promptPilotContainer);
 
-            initializedPromise.then(() => {
-                db_tag.initializeTagModels(resData);
+    initialize({
+        isVisible: false,
+        status: 'loading',
+        type: 'tag',
+        textarea: null,
+        selectedCategory: 'all',
+        selectedItem: null,
+        items: [],
+        pos: {
+            offset_x: 0,
+            offset_y: 0,
+            x: 0,
+            y: 0,
+        },
+        parseResult: {
+            promptInfo: {
+                prompt: '',
+                caretPosition: 0,
+                inputtingString: '',
+                activeWordIndex: -1,
+                words: [],
+            },
+            insertionInfo: {
+                isMetaBlock: false,
+                needPrependComma: false,
+                needPrependSpace: false,
+            },
+        },
+        message: '',
+    });
+
+    const refreshButtonSelector = '.extra-network-control--refresh';
+    const refreshButtons = gradioApp().querySelectorAll<HTMLDivElement>(refreshButtonSelector);
+    refreshButtons.forEach((button) => {
+        button.addEventListener('click', () => {
+            fetch(`${API_PREFIX}/refresh`, { method: 'POST' }).then(async (res) => {
+                const resData: ResponseData | undefined = await res.json();
                 db_lora.initializeLoraModels(resData);
-                db_sg.initializeSuggestionModels(resData);
-                if (!contextState.isClosed()) {
-                    context.updateContextPosition();
-                }
             });
         });
-    } catch (e) {
-        console.error(e);
-    }
-});
-
-onOptionsChanged(() => {
-    window.pilotIsActive = window.opts[`${EXTENSION_ID}_enabled`] as boolean;
-
-    if (resolveInitialized) {
-        resolveInitialized(true);
-        resolveInitialized = null;
-    }
+    });
 });

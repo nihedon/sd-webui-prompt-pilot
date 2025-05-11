@@ -43,6 +43,7 @@ Basic usage is similar to TAC, but with some differences:
 - Type `*` followed by a word to perform a Danbooru-style tag search. This supports multi-byte (e.g. Japanese) character input. (e.g., typing `*少女` will suggest "1girl")
 - You can configure whether tags are space-separated or underscore-separated.
 - Tags are prioritized based on usage frequency rather than total post count.
+- Press Shift+Tab while tag suggestions are displayed to open the wiki page for the selected tag.
 
 ## Notes
 
@@ -59,6 +60,12 @@ Therefore, this extension may not be suitable for users who input full sentences
 If you find this extension useful, consider buying me a coffee ☕  
 [Buy Me a Coffee](https://buymeacoffee.com/nihedon)  
 [ko-fi](https://ko-fi.com/nihedon)
+
+## Changelog
+
+- **2025/05/24**: Improved rendering efficiency by switching to React-based DOM rendering
+- **2025/05/08**: Changed dictionary data acquisition method from API to URL specification. Reduced loading time by fetching compressed data
+- **2025/04/15**: Initial release
 
 ## License
 

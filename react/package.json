@@ -1,14 +1,12 @@
 {
   "name": "sd-webui-prompt-pilot",
-  "version": "0.9.1",
+  "version": "1.0.0",
   "description": "",
   "scripts": {
     "type-check": "tsc --noEmit",
     "lint": "eslint src/**/*.{ts,tsx}",
     "lint-fix": "eslint src/**/*.{ts,tsx} --fix",
     "format": "prettier --write 'src/**/*.{ts,tsx,js,json,css,md}'",
-    "build": "node esbuild.config.mjs",
-    "build-min": "node esbuild.config.mjs --minify",
     "build-map": "node esbuild.config.mjs --sourcemap",
     "build-min-map": "node esbuild.config.mjs --minify --sourcemap"
   },
@@ -27,5 +25,9 @@
     "prettier": "^3.5.3",
     "typescript": "^5.7.2",
     "typescript-eslint": "^8.29.1"
+  },
+  "dependencies": {
+    "classnames": "^2.5.1",
+    "preact": "^10.26.6"
   }
 }

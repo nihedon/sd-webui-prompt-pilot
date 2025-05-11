@@ -6,13 +6,14 @@ import prettier from 'eslint-config-prettier';
 export default defineConfig([
     ...tseslint.configs.recommended,
     {
-        files: ['**/*.ts'],
+        files: ['**/*.ts', '**/*.tsx'],
         languageOptions: {
             globals: globals.browser,
         },
         rules: {
             semi: ['error', 'always'],
             quotes: ['error', 'single'],
+            '@typescript-eslint/no-explicit-any': 'off',
         },
     },
     prettier,

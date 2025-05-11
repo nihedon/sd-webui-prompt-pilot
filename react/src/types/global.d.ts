@@ -6,6 +6,7 @@ declare global {
         };
     }
     type PilotTextArea = HTMLTextAreaElement & { dummy: HTMLDivElement & { caret: HTMLSpanElement } };
+    function gradioApp(): Document;
 }
 
 export {};
