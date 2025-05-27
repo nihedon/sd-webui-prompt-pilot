@@ -28,6 +28,7 @@
   },
   "dependencies": {
     "classnames": "^2.5.1",
+    "fflate": "^0.8.2",
     "preact": "^10.26.6"
   }
 }

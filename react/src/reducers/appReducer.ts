@@ -39,7 +39,6 @@ export type PromptPilotAction =
 
 export const promptPilotReducer = (state: AppProps, action: PromptPilotAction): AppProps => {
     if (action.type === 'SET_TEXTAREA') {
-        console.debug(action.type);
         return {
             ...state,
             isVisible: false,
@@ -47,20 +46,17 @@ export const promptPilotReducer = (state: AppProps, action: PromptPilotAction): 
             selectedCategory: 'all',
         };
     } else if (action.type === 'SET_VISIBILITY') {
-        console.debug(action.type);
         return {
             ...state,
             isVisible: action.payload,
             selectedCategory: 'all',
         };
     } else if (action.type === 'SET_STATUS') {
-        console.debug(action.type, action.payload);
         return {
             ...state,
             status: action.payload,
         };
     } else if (action.type === 'SET_POSITION') {
-        console.debug(action.type);
         return {
             ...state,
             pos: {
@@ -71,19 +67,16 @@ export const promptPilotReducer = (state: AppProps, action: PromptPilotAction): 
             },
         };
     } else if (action.type === 'SET_TAB') {
-        console.debug(action.type);
         return {
             ...state,
             selectedCategory: action.payload,
         };
     } else if (action.type === 'SET_SELECTED_ITEM') {
-        console.debug(action.type);
         return {
             ...state,
             selectedItem: action.payload,
         };
     } else if (action.type === 'SET_ITEMS') {
-        console.debug(action.type);
         return {
             ...state,
             isVisible: true,
@@ -93,7 +86,6 @@ export const promptPilotReducer = (state: AppProps, action: PromptPilotAction): 
             message: action.payload.items.length > 0 ? '' : 'No results found',
         };
     } else if (action.type === 'SET_MESSAGE') {
-        console.debug(action.type);
         return {
             ...state,
             isVisible: true,
@@ -101,7 +93,6 @@ export const promptPilotReducer = (state: AppProps, action: PromptPilotAction): 
             message: action.payload.message,
         };
     } else if (action.type === 'SET_PARSE_RESULT') {
-        console.debug(action.type);
         return {
             ...state,
             parseResult: action.payload,

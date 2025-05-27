@@ -67,7 +67,6 @@ export const TextareaEventHandlers = () => {
     useCompositionEvent(
         'compositionstart',
         () => {
-            console.debug('compositionstart');
             isComposingRef.current = true;
         },
         [state.textarea],
@@ -76,7 +75,6 @@ export const TextareaEventHandlers = () => {
     useCompositionEvent(
         'compositionend',
         () => {
-            console.debug('compositionend');
             isComposingRef.current = false;
             if (!isWeightMode.current) {
                 dispatchSetPosition(dispatch, calcContextPosition(state));
@@ -89,7 +87,6 @@ export const TextareaEventHandlers = () => {
     useKeyboardEvent(
         'input',
         () => {
-            console.debug('input');
             if (isWeightMode.current || isComposingRef.current) {
                 return;
             }
@@ -102,7 +99,6 @@ export const TextareaEventHandlers = () => {
     useKeyboardEvent(
         'keydown',
         (e: KeyboardEvent) => {
-            console.debug('keydown');
             const key = e.key as KeyCode;
             if (e.ctrlKey && (key === 'ArrowDown' || key === 'ArrowUp')) {
                 isWeightMode.current = true;
@@ -164,7 +160,6 @@ export const TextareaEventHandlers = () => {
     useKeyboardEvent(
         'keyup',
         (e: KeyboardEvent) => {
-            console.debug('keyup');
             isWeightMode.current = false;
 
             if (!state.isVisible) {

@@ -78,8 +78,12 @@ export const Items = () => {
                             className={classNames(`group${item.category}`, state.selectedItem && state.selectedItem.value === item.value ? 'selected' : '')}
                             data-index={i}
                         >
-                            {state.type === 'tag' && <span className="highlight recommend"></span>}
-                            {state.type === 'tag' && <a className="wiki">?</a>}
+                            {state.type === 'tag' && <span className={classNames('highlight', item.useCount > 0 ? 'recommend' : null)}></span>}
+                            {state.type === 'tag' && (
+                                <a className="wiki" style={{ visibility: item.postCount > 0 ? '' : 'hidden' }}>
+                                    ?
+                                </a>
+                            )}
                             <span className="title">
                                 <HighlightedText item={item} />
                             </span>
