@@ -30,7 +30,8 @@ export function insertWordIntoPrompt(state: AppProps) {
         return;
     }
 
-    const usingExecCommand = window.opts[`${EXTENSION_ID}_using_execCommand`] as boolean;
+    // TODO const usingExecCommand = window.promptPilot.config[`using_execCommand`] as boolean;
+    const usingExecCommand = true;
 
     const textarea = state.textarea!;
     if (usingExecCommand) {
@@ -98,11 +99,7 @@ function getTagInsertionData(state: AppProps, props: ItemProps): TextInsertionDa
     }
     insertTag = escapePrompt(insertTag);
 
-    const appendComma = window.opts[`${EXTENSION_ID}_append_comma`] as boolean;
-    if (appendComma) {
-        insertTag += ',';
-    }
-    insertTag += ' ';
+    insertTag += ', ';
     return { range: { start: startPosition, end: promptInfo.caretPosition }, insertText: insertTag };
 }
 
@@ -155,11 +152,7 @@ function getSuggestionInsertionData(state: AppProps, props: ItemProps): TextInse
         word = ' ' + word;
     }
 
-    const appendComma = window.opts[`${EXTENSION_ID}_append_comma`] as boolean;
-    if (appendComma) {
-        word += ',';
-    }
-    word += ' ';
+    word += ', ';
     return { range: { start: startPosition, end: promptInfo.caretPosition }, insertText: word };
 }
 

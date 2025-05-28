@@ -56,8 +56,13 @@ export function calcContextPosition(state: AppProps): {
     const rect = caret.getBoundingClientRect();
     const computedStyle = window.getComputedStyle(textarea);
 
-    const lineHeight = parseFloat(computedStyle.lineHeight.replace(/[^\d\.]+/, ''));
-
+    let lineHeight: number;
+    if (computedStyle.lineHeight === 'normal') {
+        const fontSize = parseFloat(computedStyle.fontSize.replace(/[^\d\.]+/, ''));
+        lineHeight = fontSize * 1.2;
+    } else {
+        lineHeight = parseFloat(computedStyle.lineHeight.replace(/[^\d\.]+/, ''));
+    }
     const textareaRect = textarea.getBoundingClientRect();
     const x = rect.left - textareaRect.left - textarea.scrollLeft;
     const y = rect.top - textareaRect.top - textarea.scrollTop + lineHeight;

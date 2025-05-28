@@ -4,6 +4,8 @@ const baseOptions = {
     entryPoints: ['src/index.ts'],
     bundle: true,
     outfile: '../javascript/prompt_pilot.js',
+    format: 'esm',
+    platform: 'browser',
     jsxFactory: 'h',
     jsxFragment: 'Fragment',
     jsxImportSource: 'preact',

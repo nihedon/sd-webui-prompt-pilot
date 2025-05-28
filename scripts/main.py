@@ -474,8 +474,6 @@ def on_ui_settings() -> None:
         shared.OptionInfo(100, "Maximum results (Lora)", gr.Slider, maximumLimitSliderOpts)\
         .info("-1 = unlimited")
 
-    opts[f"{EXTENSION_ID}_append_comma"] = \
-        shared.OptionInfo(True, "Append a comma after tag autocompletion")
     opts[f"{EXTENSION_ID}_using_execCommand"] = \
         shared.OptionInfo(True, "Use the deprecated execCommand function to replace text")\
         .info('You can use "undo" to revert the text to its previous state, but it will no longer be updated in real-time.')
