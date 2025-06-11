@@ -28,7 +28,12 @@ export const Items = () => {
         const element = target.closest('li');
         if (element) {
             const item = items[+element.dataset.index!];
-            if (item && (state.selectedItem === null || state.selectedItem.value !== item.value)) {
+            if (
+                item &&
+                (state.selectedItem === null ||
+                    state.selectedItem.value !== item.value ||
+                    state.selectedItem.consequentTagModel?.value !== item.consequentTagModel?.value)
+            ) {
                 dispatchSetSelectedItem(dispatch, item);
             }
         }
@@ -75,7 +80,14 @@ export const Items = () => {
                     return (
                         <li
                             key={item.value}
-                            className={classNames(`group${item.category}`, state.selectedItem && state.selectedItem.value === item.value ? 'selected' : '')}
+                            className={classNames(
+                                `group${item.category}`,
+                                state.selectedItem &&
+                                    state.selectedItem.value === item.value &&
+                                    state.selectedItem.consequentTagModel?.value === item.consequentTagModel?.value
+                                    ? 'selected'
+                                    : '',
+                            )}
                             data-index={i}
                         >
                             {state.type === 'tag' && <span className={classNames('highlight', item.useCount > 0 ? 'recommend' : null)}></span>}
