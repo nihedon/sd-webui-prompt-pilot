@@ -156,6 +156,7 @@ export function searchTag(query: string, priorityTags: string[]): ItemProps[] {
             if (matchedWords.length > 0) {
                 const props: ItemProps = {
                     ...tagModel,
+                    exists: false,
                     isPriority: priorityTagSet.has(tagModel.value),
                     matchedWords: matchedWords,
                     view: null,
@@ -275,6 +276,7 @@ export const debounceSearchWithApi = debounceWithLeadingTrailing((query: string,
                 return {
                     value: tag,
                     category: item.category.toString(),
+                    exists: false,
                     matchedWords: [],
                     useCount: 0,
                     postCount: item.post_count,

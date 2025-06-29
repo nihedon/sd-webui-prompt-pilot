@@ -24,6 +24,7 @@ export interface ItemProps {
     isPriority: boolean;
     matchedWords: { word: string; index: number }[];
     category: string;
+    exists: boolean;
     useCount: number;
     postCount: number;
     consequentTagModel: TagModel | null;

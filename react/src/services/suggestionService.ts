@@ -33,6 +33,7 @@ export function searchSuggestion(nearestTag: string | undefined, existTags: Set<
                 isPriority: false,
                 matchedWords: [],
                 category: '',
+                exists: false,
                 useCount: 0,
                 postCount: 0,
                 consequentTagModel: null,

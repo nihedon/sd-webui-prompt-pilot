@@ -96,7 +96,7 @@ export const Items = () => {
                                     ?
                                 </a>
                             )}
-                            <span className="title">
+                            <span className="title" style={{ textDecoration: item.exists ? 'line-through' : undefined }}>
                                 <HighlightedText item={item} />
                             </span>
                             {state.type === 'tag' && item.postCount > 0 && <span className="post-count">{formatNumberWithUnits(item.postCount)}</span>}

@@ -58,6 +58,11 @@ function handleTagItems(inputtingString: string, nearestTag: string | undefined,
         dispatchSetMessage(dispatch, 'tag', 'Searching for tags via API...');
     } else {
         const items = db_tag.searchTag(inputtingString, priorityTag);
+        items.forEach((item) => {
+            if (existTags.has(item.value.replaceAll('_', ' '))) {
+                item.exists = true;
+            }
+        });
         dispatchSetItems(dispatch, 'tag', items);
     }
 }

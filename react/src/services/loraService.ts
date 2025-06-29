@@ -43,6 +43,7 @@ export function searchLora(query: string): ItemProps[] {
                 view: null,
                 isPriority: false,
                 category: '',
+                exists: false,
                 useCount: 0,
                 postCount: 0,
                 consequentTagModel: null,
